@@ -77,7 +77,8 @@ def plot_classifier_results(stats: pd.DataFrame, output_dir: str = 'results_clas
             ax = axes[idx]
             source_data = classifier_data[classifier_data['source_model'] == source]
             
-            for actual_temp in actual_temps:
+            # Order: T=1.0 first, then T=0.5, then T=0.0
+            for actual_temp in [1.0, 0.5, 0.0]:
                 temp_data = source_data[source_data['actual_temperature'] == actual_temp]
                 temp_data = temp_data.sort_values('n_questions')
                 
