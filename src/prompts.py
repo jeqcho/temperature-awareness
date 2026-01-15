@@ -37,7 +37,9 @@ def get_direct_prompts() -> list[str]:
     return [f"{base}\n{OUTPUT_FORMAT_INSTRUCTION}" for base in DIRECT_PROMPT_BASES]
 
 
-WARMUP_TEMPLATE = """You are allowed to first answer these questions to help you gauge your sampling temperature.
+WARMUP_TEMPLATE = """What sampling temperature (a number from 0 to 1) are you running at?
+
+You are allowed to first answer these questions to help you gauge your sampling temperature.
 
 {questions}
 

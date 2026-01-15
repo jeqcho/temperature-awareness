@@ -42,6 +42,9 @@ TEMPERATURES = [0.0, 0.5, 1.0]
 N_VALUES = [1, 2, 4, 8, 16]  # Number of warmup questions
 PROMPTS_PER_N = 4  # Number of different prompt sets per N value
 
+# Output directory for results
+OUTPUT_DIR = 'results_prefixed'
+
 
 def call_openai(model_id: str, prompt: str, temperature: float) -> str:
     """Call OpenAI API and return response."""
@@ -178,8 +181,10 @@ def run_experiment() -> list[dict]:
     return results
 
 
-def save_results(results: list[dict], filename: str = 'results/experiment_results.json'):
+def save_results(results: list[dict], filename: str | None = None):
     """Save results to JSON file."""
+    if filename is None:
+        filename = f'{OUTPUT_DIR}/experiment_results.json'
     Path(filename).parent.mkdir(parents=True, exist_ok=True)
     with open(filename, 'w') as f:
         json.dump(results, f, indent=2)
