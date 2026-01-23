@@ -50,7 +50,7 @@ def compute_statistics(df: pd.DataFrame) -> pd.DataFrame:
     return stats
 
 
-def plot_classifier_results(stats: pd.DataFrame, output_dir: str = 'results_classification'):
+def plot_classifier_results(stats: pd.DataFrame, output_dir: str = 'plots/classification'):
     """Create one figure per classifier model with subplots by source model."""
     Path(output_dir).mkdir(parents=True, exist_ok=True)
     
@@ -70,7 +70,7 @@ def plot_classifier_results(stats: pd.DataFrame, output_dir: str = 'results_clas
         n_cols = 2
         n_rows = (n_sources + 1) // 2
         
-        fig, axes = plt.subplots(n_rows, n_cols, figsize=(12, 5 * n_rows))
+        fig, axes = plt.subplots(n_rows, n_cols, figsize=(14, 6 * n_rows))
         axes = axes.flatten() if n_sources > 1 else [axes]
         
         for idx, source in enumerate(source_models):
@@ -95,21 +95,22 @@ def plot_classifier_results(stats: pd.DataFrame, output_dir: str = 'results_clas
                     label=temp_labels[actual_temp],
                     color=temp_colors[actual_temp],
                     marker='o',
-                    capsize=4,
-                    linewidth=2,
-                    markersize=8,
+                    capsize=5,
+                    linewidth=2.5,
+                    markersize=10,
                 )
                 
                 # Add horizontal line for actual temperature (reference)
                 ax.axhline(y=actual_temp, color=temp_colors[actual_temp], 
-                          linestyle='--', alpha=0.3)
+                          linestyle='--', alpha=0.3, linewidth=2)
             
-            ax.set_xlabel('Number of Warmup Questions (N)', fontsize=11)
-            ax.set_ylabel('Guessed Temperature', fontsize=11)
-            ax.set_title(f'Source: {source}', fontsize=12)
+            ax.set_xlabel('Number of Warmup Questions (N)', fontsize=14)
+            ax.set_ylabel('Guessed Temperature', fontsize=14)
+            ax.set_title(f'Source: {source}', fontsize=16)
             ax.set_xticks([0, 1, 2, 4, 8, 16])
+            ax.tick_params(axis='both', labelsize=12)
             ax.set_ylim(-0.05, 1.05)
-            ax.legend(loc='best', fontsize=9)
+            ax.legend(loc='best', fontsize=12)
             ax.grid(True, alpha=0.3)
         
         # Hide unused subplots
@@ -117,17 +118,17 @@ def plot_classifier_results(stats: pd.DataFrame, output_dir: str = 'results_clas
             axes[idx].set_visible(False)
         
         fig.suptitle(f'Classifier: {classifier}\nGuessed Temperature by Source Model', 
-                    fontsize=14, fontweight='bold')
+                    fontsize=18, fontweight='bold')
         plt.tight_layout()
         
         # Save figure
         output_path = f'{output_dir}/classifier_{classifier.replace(".", "_")}.png'
-        plt.savefig(output_path, dpi=150, bbox_inches='tight')
+        plt.savefig(output_path, dpi=300, bbox_inches='tight')
         plt.close()
         print(f"Saved: {output_path}")
 
 
-def plot_combined_heatmap(stats: pd.DataFrame, output_dir: str = 'results_classification'):
+def plot_combined_heatmap(stats: pd.DataFrame, output_dir: str = 'plots/classification'):
     """Create a heatmap showing classification accuracy."""
     Path(output_dir).mkdir(parents=True, exist_ok=True)
     

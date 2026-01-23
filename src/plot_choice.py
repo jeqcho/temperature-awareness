@@ -14,7 +14,7 @@ import numpy as np
 import pandas as pd
 
 
-def load_results(filename: str = 'results_choice/experiment_results.json') -> list[dict]:
+def load_results(filename: str = 'src/results_choice/experiment_results.json') -> list[dict]:
     """Load results from JSON file."""
     with open(filename) as f:
         return json.load(f)
@@ -102,7 +102,7 @@ def compute_confusion_matrix(df: pd.DataFrame) -> dict:
     return confusion_data
 
 
-def plot_by_model(stats: pd.DataFrame, output_dir: str = 'results_choice'):
+def plot_by_model(stats: pd.DataFrame, output_dir: str = 'plots/choice'):
     """Create line plots: one per model, showing reported temp vs N questions for each actual temp."""
     Path(output_dir).mkdir(parents=True, exist_ok=True)
 
@@ -114,7 +114,7 @@ def plot_by_model(stats: pd.DataFrame, output_dir: str = 'results_choice'):
     temp_labels = {0.0: 'Actual T=0.0', 0.5: 'Actual T=0.5', 1.0: 'Actual T=1.0'}
 
     for model in models:
-        fig, ax = plt.subplots(figsize=(10, 6))
+        fig, ax = plt.subplots(figsize=(12, 7))
 
         model_data = stats[stats['model'] == model]
 
@@ -136,21 +136,22 @@ def plot_by_model(stats: pd.DataFrame, output_dir: str = 'results_choice'):
                 label=temp_labels[actual_temp],
                 color=temp_colors[actual_temp],
                 marker='o',
-                capsize=4,
-                linewidth=2,
-                markersize=8,
+                capsize=5,
+                linewidth=2.5,
+                markersize=10,
             )
 
             # Add horizontal line for actual temperature (reference)
             ax.axhline(y=actual_temp, color=temp_colors[actual_temp], 
-                      linestyle='--', alpha=0.3, linewidth=1.5)
+                      linestyle='--', alpha=0.3, linewidth=2)
 
-        ax.set_xlabel('Number of Warmup Questions (N)', fontsize=12)
-        ax.set_ylabel('Average Reported Temperature', fontsize=12)
-        ax.set_title(f'Model: {model}\nReported Temperature vs Warmup Questions (Choice: 0, 0.5, 1)', fontsize=14)
+        ax.set_xlabel('Number of Warmup Questions (N)', fontsize=16)
+        ax.set_ylabel('Average Reported Temperature', fontsize=16)
+        ax.set_title(f'Model: {model}\nReported Temperature vs Warmup Questions (Choice: 0, 0.5, 1)', fontsize=18)
         ax.set_xticks([0, 1, 2, 4, 8, 16])
+        ax.tick_params(axis='both', labelsize=14)
         ax.set_ylim(-0.05, 1.05)
-        ax.legend(loc='best')
+        ax.legend(loc='best', fontsize=14)
         ax.grid(True, alpha=0.3)
 
         plt.tight_layout()
@@ -158,12 +159,12 @@ def plot_by_model(stats: pd.DataFrame, output_dir: str = 'results_choice'):
         # Save with model name (replace dots with underscores for filename)
         safe_name = model.replace('.', '_').replace('-', '_')
         output_path = f'{output_dir}/model_{safe_name}.png'
-        plt.savefig(output_path, dpi=150)
+        plt.savefig(output_path, dpi=300)
         plt.close()
         print(f"Saved plot: {output_path}")
 
 
-def plot_accuracy(accuracy: pd.DataFrame, output_dir: str = 'results_choice'):
+def plot_accuracy(accuracy: pd.DataFrame, output_dir: str = 'plots/choice'):
     """Plot accuracy by model and N questions."""
     Path(output_dir).mkdir(parents=True, exist_ok=True)
     
@@ -171,7 +172,7 @@ def plot_accuracy(accuracy: pd.DataFrame, output_dir: str = 'results_choice'):
     colors = plt.cm.tab10(np.linspace(0, 1, len(models)))
     model_colors = dict(zip(models, colors))
     
-    fig, ax = plt.subplots(figsize=(10, 6))
+    fig, ax = plt.subplots(figsize=(12, 7))
     
     for model in models:
         model_data = accuracy[accuracy['model'] == model].sort_values('n_questions')
@@ -189,37 +190,38 @@ def plot_accuracy(accuracy: pd.DataFrame, output_dir: str = 'results_choice'):
             label=model,
             color=model_colors[model],
             marker='o',
-            capsize=4,
-            linewidth=2,
-            markersize=8,
+            capsize=5,
+            linewidth=2.5,
+            markersize=10,
         )
     
     # Random baseline (33.3%)
-    ax.axhline(y=33.3, color='gray', linestyle='--', alpha=0.5, label='Random (33.3%)')
+    ax.axhline(y=33.3, color='gray', linestyle='--', alpha=0.5, linewidth=2, label='Random (33.3%)')
     
-    ax.set_xlabel('Number of Warmup Questions (N)', fontsize=12)
-    ax.set_ylabel('Accuracy (%)', fontsize=12)
-    ax.set_title('Temperature Prediction Accuracy (Choice: 0, 0.5, 1)\nvs Warmup Questions', fontsize=14)
+    ax.set_xlabel('Number of Warmup Questions (N)', fontsize=16)
+    ax.set_ylabel('Accuracy (%)', fontsize=16)
+    ax.set_title('Temperature Prediction Accuracy (Choice: 0, 0.5, 1)\nvs Warmup Questions', fontsize=18)
     ax.set_xticks([0, 1, 2, 4, 8, 16])
+    ax.tick_params(axis='both', labelsize=14)
     ax.set_ylim(0, 100)
-    ax.legend(loc='best')
+    ax.legend(loc='best', fontsize=14)
     ax.grid(True, alpha=0.3)
     
     plt.tight_layout()
     output_path = f'{output_dir}/accuracy_vs_n_questions.png'
-    plt.savefig(output_path, dpi=150)
+    plt.savefig(output_path, dpi=300)
     plt.close()
     print(f"Saved plot: {output_path}")
 
 
-def plot_confusion_matrices(confusion_data: dict, output_dir: str = 'results_choice'):
+def plot_confusion_matrices(confusion_data: dict, output_dir: str = 'plots/choice'):
     """Plot confusion matrices for each model."""
     Path(output_dir).mkdir(parents=True, exist_ok=True)
     
     temp_labels = ['0.0', '0.5', '1.0']
     
     for model, data in confusion_data.items():
-        fig, ax = plt.subplots(figsize=(8, 6))
+        fig, ax = plt.subplots(figsize=(9, 7))
         
         matrix = data['normalized']
         
@@ -227,7 +229,8 @@ def plot_confusion_matrices(confusion_data: dict, output_dir: str = 'results_cho
         
         # Add colorbar
         cbar = ax.figure.colorbar(im, ax=ax)
-        cbar.ax.set_ylabel('Proportion', rotation=-90, va='bottom')
+        cbar.ax.set_ylabel('Proportion', rotation=-90, va='bottom', fontsize=14)
+        cbar.ax.tick_params(labelsize=12)
         
         # Add text annotations
         for i in range(3):
@@ -236,21 +239,21 @@ def plot_confusion_matrices(confusion_data: dict, output_dir: str = 'results_cho
                 pct = matrix[i, j] * 100
                 text = f'{pct:.1f}%\n(n={raw_count})'
                 color = 'white' if matrix[i, j] > 0.5 else 'black'
-                ax.text(j, i, text, ha='center', va='center', color=color, fontsize=10)
+                ax.text(j, i, text, ha='center', va='center', color=color, fontsize=12)
         
         ax.set_xticks(range(3))
         ax.set_yticks(range(3))
-        ax.set_xticklabels(temp_labels)
-        ax.set_yticklabels(temp_labels)
-        ax.set_xlabel('Predicted Temperature', fontsize=12)
-        ax.set_ylabel('Actual Temperature', fontsize=12)
-        ax.set_title(f'Model: {model}\nConfusion Matrix (Choice: 0, 0.5, 1)', fontsize=14)
+        ax.set_xticklabels(temp_labels, fontsize=14)
+        ax.set_yticklabels(temp_labels, fontsize=14)
+        ax.set_xlabel('Predicted Temperature', fontsize=16)
+        ax.set_ylabel('Actual Temperature', fontsize=16)
+        ax.set_title(f'Model: {model}\nConfusion Matrix (Choice: 0, 0.5, 1)', fontsize=18)
         
         plt.tight_layout()
         
         safe_name = model.replace('.', '_').replace('-', '_')
         output_path = f'{output_dir}/confusion_{safe_name}.png'
-        plt.savefig(output_path, dpi=150)
+        plt.savefig(output_path, dpi=300)
         plt.close()
         print(f"Saved plot: {output_path}")
 

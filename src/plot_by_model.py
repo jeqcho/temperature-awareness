@@ -44,7 +44,7 @@ def compute_statistics_by_group(df: pd.DataFrame) -> pd.DataFrame:
     return stats
 
 
-def plot_by_model(stats: pd.DataFrame, output_dir: str = 'results'):
+def plot_by_model(stats: pd.DataFrame, output_dir: str = 'plots/main'):
     """Create line plots: one per model, showing reported temp vs N questions for each actual temp."""
     Path(output_dir).mkdir(parents=True, exist_ok=True)
 
@@ -56,7 +56,7 @@ def plot_by_model(stats: pd.DataFrame, output_dir: str = 'results'):
     temp_labels = {0.0: 'Actual T=0.0', 0.5: 'Actual T=0.5', 1.0: 'Actual T=1.0'}
 
     for model in models:
-        fig, ax = plt.subplots(figsize=(10, 6))
+        fig, ax = plt.subplots(figsize=(12, 7))
 
         model_data = stats[stats['model'] == model]
 
@@ -78,21 +78,22 @@ def plot_by_model(stats: pd.DataFrame, output_dir: str = 'results'):
                 label=temp_labels[actual_temp],
                 color=temp_colors[actual_temp],
                 marker='o',
-                capsize=4,
-                linewidth=2,
-                markersize=8,
+                capsize=5,
+                linewidth=2.5,
+                markersize=10,
             )
 
             # Add horizontal line for actual temperature (reference)
             ax.axhline(y=actual_temp, color=temp_colors[actual_temp], 
-                      linestyle='--', alpha=0.3, linewidth=1.5)
+                      linestyle='--', alpha=0.3, linewidth=2)
 
-        ax.set_xlabel('Number of Warmup Questions (N)', fontsize=12)
-        ax.set_ylabel('Average Reported Temperature', fontsize=12)
-        ax.set_title(f'Model: {model}\nReported Temperature vs Warmup Questions', fontsize=14)
+        ax.set_xlabel('Number of Warmup Questions (N)', fontsize=16)
+        ax.set_ylabel('Average Reported Temperature', fontsize=16)
+        ax.set_title(f'Model: {model}\nReported Temperature vs Warmup Questions', fontsize=18)
         ax.set_xticks([0, 1, 2, 4, 8, 16])
+        ax.tick_params(axis='both', labelsize=14)
         ax.set_ylim(-0.05, 1.05)
-        ax.legend(loc='best')
+        ax.legend(loc='best', fontsize=14)
         ax.grid(True, alpha=0.3)
 
         plt.tight_layout()
@@ -100,7 +101,7 @@ def plot_by_model(stats: pd.DataFrame, output_dir: str = 'results'):
         # Save with model name (replace dots with underscores for filename)
         safe_name = model.replace('.', '_').replace('-', '_')
         output_path = f'{output_dir}/model_{safe_name}.png'
-        plt.savefig(output_path, dpi=150)
+        plt.savefig(output_path, dpi=300)
         plt.close()
         print(f"Saved plot: {output_path}")
 

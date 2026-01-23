@@ -8,7 +8,7 @@ import numpy as np
 
 # Configuration
 RESULTS_FILE = "results_logprob_50/experiment_results.json"
-OUTPUT_DIR = "results_logprob_50"
+OUTPUT_DIR = "plots/logprob_50"
 
 
 def load_results(filepath: str) -> list[dict]:
@@ -33,29 +33,30 @@ def plot_combined_histogram(results: list[dict]):
     print(f"Plotting {len(probs_word1)} data points for combined histogram")
     
     # Create figure - slide quality size
-    fig, ax = plt.subplots(figsize=(10, 6))
+    fig, ax = plt.subplots(figsize=(12, 7))
     
     # Define bins from 0 to 1
     bins = np.linspace(0, 1, 25)
     
     # Plot histogram with default color
-    ax.hist(probs_word1, bins=bins, alpha=0.7, color="#1f77b4", edgecolor="black", linewidth=0.5)
+    ax.hist(probs_word1, bins=bins, alpha=0.7, color="#1f77b4", edgecolor="black", linewidth=0.8)
     
     # Calculate mean
     mean_prob = np.mean(probs_word1)
     std_prob = np.std(probs_word1)
     
     # Add solid vertical line for target value (0.5)
-    ax.axvline(x=0.5, color="green", linestyle="-", linewidth=2, alpha=0.9, label="Target (0.50)")
+    ax.axvline(x=0.5, color="green", linestyle="-", linewidth=2.5, alpha=0.9, label="Target (0.50)")
     
     # Add dashed vertical line for actual mean
-    ax.axvline(x=mean_prob, color="red", linestyle="--", linewidth=2, alpha=0.9, label=f"Mean ({mean_prob:.2f})")
+    ax.axvline(x=mean_prob, color="red", linestyle="--", linewidth=2.5, alpha=0.9, label=f"Mean ({mean_prob:.2f})")
     
     # Labels and title
-    ax.set_xlabel("Probability of Word1 (from logprobs)", fontsize=12)
-    ax.set_ylabel("Count", fontsize=12)
-    ax.set_title("Distribution of Word1 Probability for 50/50 Choice Task (T=1)", fontsize=14)
-    ax.legend(loc="upper right", fontsize=10)
+    ax.set_xlabel("Probability of Word1 (from logprobs)", fontsize=16)
+    ax.set_ylabel("Count", fontsize=16)
+    ax.set_title("Distribution of Word1 Probability for 50/50 Choice Task (T=1)", fontsize=18)
+    ax.tick_params(axis='both', labelsize=14)
+    ax.legend(loc="upper right", fontsize=14)
     
     # Set x-axis limits
     ax.set_xlim(0, 1)
@@ -65,14 +66,14 @@ def plot_combined_histogram(results: list[dict]):
     
     # Add summary stats as text
     stats_text = f"μ={mean_prob:.3f}, σ={std_prob:.3f}\nn={len(probs_word1)}"
-    ax.text(0.02, 0.98, stats_text, transform=ax.transAxes, fontsize=10,
+    ax.text(0.02, 0.98, stats_text, transform=ax.transAxes, fontsize=12,
             verticalalignment="top", bbox=dict(boxstyle="round", facecolor="white", alpha=0.8))
     
     # Save figure
     Path(OUTPUT_DIR).mkdir(parents=True, exist_ok=True)
     output_file = f"{OUTPUT_DIR}/probability_histogram_combined.png"
     plt.tight_layout()
-    plt.savefig(output_file, dpi=150, bbox_inches="tight")
+    plt.savefig(output_file, dpi=300, bbox_inches="tight")
     print(f"Saved plot to {output_file}")
     
     plt.close()
@@ -95,31 +96,32 @@ def plot_position_histogram(results: list[dict]):
     print(f"Plotting {len(probs_word1)} data points for position histogram")
     
     # Create figure - slide quality size
-    fig, ax = plt.subplots(figsize=(10, 6))
+    fig, ax = plt.subplots(figsize=(12, 7))
     
     # Define bins from 0 to 1
     bins = np.linspace(0, 1, 25)
     
     # Plot overlapping histograms with transparency
-    ax.hist(probs_word1, bins=bins, alpha=0.5, label="Word1 (first position)", color="#2563eb", edgecolor="black", linewidth=0.5)
-    ax.hist(probs_word2, bins=bins, alpha=0.5, label="Word2 (second position)", color="#f97316", edgecolor="black", linewidth=0.5)
+    ax.hist(probs_word1, bins=bins, alpha=0.5, label="Word1 (first position)", color="#2563eb", edgecolor="black", linewidth=0.8)
+    ax.hist(probs_word2, bins=bins, alpha=0.5, label="Word2 (second position)", color="#f97316", edgecolor="black", linewidth=0.8)
     
     # Calculate means
     mean_word1 = np.mean(probs_word1)
     mean_word2 = np.mean(probs_word2)
     
     # Add solid vertical line for target value (0.5)
-    ax.axvline(x=0.5, color="green", linestyle="-", linewidth=2, alpha=0.9, label="Target (0.50)")
+    ax.axvline(x=0.5, color="green", linestyle="-", linewidth=2.5, alpha=0.9, label="Target (0.50)")
     
     # Add dashed vertical lines for actual means
-    ax.axvline(x=mean_word1, color="#2563eb", linestyle="--", linewidth=2, alpha=0.9, label=f"Mean Word1 ({mean_word1:.2f})")
-    ax.axvline(x=mean_word2, color="#f97316", linestyle="--", linewidth=2, alpha=0.9, label=f"Mean Word2 ({mean_word2:.2f})")
+    ax.axvline(x=mean_word1, color="#2563eb", linestyle="--", linewidth=2.5, alpha=0.9, label=f"Mean Word1 ({mean_word1:.2f})")
+    ax.axvline(x=mean_word2, color="#f97316", linestyle="--", linewidth=2.5, alpha=0.9, label=f"Mean Word2 ({mean_word2:.2f})")
     
     # Labels and title
-    ax.set_xlabel("Probability (from logprobs)", fontsize=12)
-    ax.set_ylabel("Count", fontsize=12)
-    ax.set_title("Distribution of Probabilities by Word Position for 50/50 Task (T=1)", fontsize=14)
-    ax.legend(loc="upper right", fontsize=10)
+    ax.set_xlabel("Probability (from logprobs)", fontsize=16)
+    ax.set_ylabel("Count", fontsize=16)
+    ax.set_title("Distribution of Probabilities by Word Position for 50/50 Task (T=1)", fontsize=18)
+    ax.tick_params(axis='both', labelsize=14)
+    ax.legend(loc="upper right", fontsize=14)
     
     # Set x-axis limits
     ax.set_xlim(0, 1)
@@ -132,13 +134,13 @@ def plot_position_histogram(results: list[dict]):
     std_word2 = np.std(probs_word2)
     
     stats_text = f"Word1: μ={mean_word1:.3f}, σ={std_word1:.3f}\nWord2: μ={mean_word2:.3f}, σ={std_word2:.3f}"
-    ax.text(0.02, 0.98, stats_text, transform=ax.transAxes, fontsize=10,
+    ax.text(0.02, 0.98, stats_text, transform=ax.transAxes, fontsize=12,
             verticalalignment="top", bbox=dict(boxstyle="round", facecolor="white", alpha=0.8))
     
     # Save figure
     output_file = f"{OUTPUT_DIR}/probability_histogram_by_position.png"
     plt.tight_layout()
-    plt.savefig(output_file, dpi=150, bbox_inches="tight")
+    plt.savefig(output_file, dpi=300, bbox_inches="tight")
     print(f"Saved plot to {output_file}")
     
     plt.close()

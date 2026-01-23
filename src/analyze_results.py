@@ -40,7 +40,7 @@ def compute_statistics_by_group(df: pd.DataFrame) -> pd.DataFrame:
     return stats
 
 
-def plot_temperature_vs_n_questions(stats: pd.DataFrame, output_dir: str = 'results'):
+def plot_temperature_vs_n_questions(stats: pd.DataFrame, output_dir: str = 'plots/main'):
     """Create line plots: one per actual temperature, showing reported temp vs N questions."""
     Path(output_dir).mkdir(parents=True, exist_ok=True)
 
@@ -52,7 +52,7 @@ def plot_temperature_vs_n_questions(stats: pd.DataFrame, output_dir: str = 'resu
     model_colors = dict(zip(models, colors))
 
     for actual_temp in actual_temps:
-        fig, ax = plt.subplots(figsize=(10, 6))
+        fig, ax = plt.subplots(figsize=(12, 7))
 
         temp_data = stats[stats['actual_temperature'] == actual_temp]
 
@@ -72,24 +72,25 @@ def plot_temperature_vs_n_questions(stats: pd.DataFrame, output_dir: str = 'resu
                 label=model,
                 color=model_colors[model],
                 marker='o',
-                capsize=4,
-                linewidth=2,
-                markersize=8,
+                capsize=5,
+                linewidth=2.5,
+                markersize=10,
             )
 
         # Add horizontal line for actual temperature
         ax.axhline(y=actual_temp, color='gray', linestyle='--', alpha=0.5, label=f'Actual ({actual_temp})')
 
-        ax.set_xlabel('Number of Warmup Questions (N)', fontsize=12)
-        ax.set_ylabel('Average Reported Temperature', fontsize=12)
-        ax.set_title(f'Reported Temperature vs Warmup Questions\n(Actual Temperature = {actual_temp})', fontsize=14)
+        ax.set_xlabel('Number of Warmup Questions (N)', fontsize=16)
+        ax.set_ylabel('Average Reported Temperature', fontsize=16)
+        ax.set_title(f'Reported Temperature vs Warmup Questions\n(Actual Temperature = {actual_temp})', fontsize=18)
         ax.set_xticks([0, 1, 2, 4, 8, 16])
+        ax.tick_params(axis='both', labelsize=14)
         ax.set_ylim(-0.05, 1.05)
-        ax.legend(loc='best')
+        ax.legend(loc='best', fontsize=14)
         ax.grid(True, alpha=0.3)
 
         plt.tight_layout()
-        plt.savefig(f'{output_dir}/temp_{actual_temp}_vs_n_questions.png', dpi=150)
+        plt.savefig(f'{output_dir}/temp_{actual_temp}_vs_n_questions.png', dpi=300)
         plt.close()
         print(f"Saved plot: {output_dir}/temp_{actual_temp}_vs_n_questions.png")
 

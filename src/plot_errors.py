@@ -52,7 +52,7 @@ def compute_error_statistics(df: pd.DataFrame) -> pd.DataFrame:
 def plot_error(
     stats: pd.DataFrame,
     error_type: str,
-    output_dir: str = 'results',
+    output_dir: str = 'plots/main',
 ) -> None:
     """Create a line plot for the specified error type.
     
@@ -69,7 +69,7 @@ def plot_error(
     colors = plt.cm.tab10(np.linspace(0, 1, len(models)))
     model_colors = dict(zip(models, colors))
     
-    fig, ax = plt.subplots(figsize=(10, 6))
+    fig, ax = plt.subplots(figsize=(12, 7))
     
     mean_col = f'{error_type}_mean'
     stderr_col = f'{error_type}_stderr'
@@ -90,23 +90,24 @@ def plot_error(
             label=model,
             color=model_colors[model],
             marker='o',
-            capsize=4,
-            linewidth=2,
-            markersize=8,
+            capsize=5,
+            linewidth=2.5,
+            markersize=10,
         )
     
     # Labels and formatting
     error_label = 'L1 (Mean Absolute Error)' if error_type == 'l1' else 'L2 (Mean Squared Error)'
-    ax.set_xlabel('Number of Warmup Questions (N)', fontsize=12)
-    ax.set_ylabel(f'Mean {error_label}', fontsize=12)
-    ax.set_title(f'{error_label} vs Warmup Questions\n(Combined Across All Temperatures)', fontsize=14)
+    ax.set_xlabel('Number of Warmup Questions (N)', fontsize=16)
+    ax.set_ylabel(f'Mean {error_label}', fontsize=16)
+    ax.set_title(f'{error_label} vs Warmup Questions\n(Combined Across All Temperatures)', fontsize=18)
     ax.set_xticks([0, 1, 2, 4, 8, 16])
-    ax.legend(loc='best')
+    ax.tick_params(axis='both', labelsize=14)
+    ax.legend(loc='best', fontsize=14)
     ax.grid(True, alpha=0.3)
     
     plt.tight_layout()
     output_path = f'{output_dir}/{error_type}_error_vs_n_questions.png'
-    plt.savefig(output_path, dpi=150)
+    plt.savefig(output_path, dpi=300)
     plt.close()
     print(f"Saved plot: {output_path}")
 
